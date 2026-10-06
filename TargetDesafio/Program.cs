@@ -1,2 +1,10 @@
-﻿// See https://aka.ms/new-console-template for more information
-Console.WriteLine("Hello, World!");
+﻿
+
+
+using TargetDesafio;
+
+Questao1Comissoes questao1 = new Questao1Comissoes();
+
+questao1.ExecutarQuestao();
+
+Console.ReadLine(); 
