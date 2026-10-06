@@ -15,9 +15,11 @@ namespace TargetDesafio
         {
             var options = new JsonSerializerOptions { PropertyNameCaseInsensitive = true };
 
-            try {
+            try
+            {
+                string caminho = Path.Combine(AppContext.BaseDirectory, "Data", "vendas.json");
 
-                string jsonString = File.ReadAllText("C:\\Users\\carlo\\source\\repos\\TargetDesafio\\TargetDesafio\\Data\\vendas.json");
+                string jsonString = File.ReadAllText(caminho);
 
                 VendasJson dadosRaiz = JsonSerializer.Deserialize<VendasJson>(jsonString, options);
 

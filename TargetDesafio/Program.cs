@@ -1,7 +1,4 @@
-﻿
-
-
-using TargetDesafio;
+﻿using TargetDesafio;
 
 Questao1Comissoes questao1 = new Questao1Comissoes();
 
