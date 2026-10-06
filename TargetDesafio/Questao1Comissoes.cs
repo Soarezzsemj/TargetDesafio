@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace TargetDesafio
 {
-    internal class Questao1Comissoes
+    public class Questao1Comissoes
     {
     }
 }
