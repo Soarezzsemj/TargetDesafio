@@ -10,39 +10,28 @@ namespace TargetDesafio
 
         public void ExecutarQuestao()
         {
-            Console.WriteLine("CÁLCULO DE JUROS POR ATRASO");
-            Console.WriteLine();
+            bool calcularOutro;
 
-            decimal? valor = LerValor();
-            if (valor == null)
-                return;
-
-            DateTime? vencimento = LerVencimento();
-            if (vencimento == null)
-                return;
-
-            DateTime hoje = DateTime.Today;
-            int diasAtraso = CalcularDiasAtraso(vencimento.Value, hoje);
-            decimal juros = CalcularJuros(valor.Value, diasAtraso);
-            decimal total = valor.Value + juros;
-
-            Console.WriteLine();
-            Console.WriteLine($"Valor original: {valor.Value.ToString("C", CulturaBr)}");
-            Console.WriteLine($"Vencimento: {vencimento.Value.ToString("dd/MM/yyyy", CulturaBr)}");
-            Console.WriteLine($"Data de hoje: {hoje.ToString("dd/MM/yyyy", CulturaBr)}");
-
-            if (diasAtraso == 0)
+            do
             {
-                Console.WriteLine("O título não está vencido, então não há juros.");
-            }
-            else
-            {
-                Console.WriteLine($"Dias em atraso: {diasAtraso}");
-                Console.WriteLine($"Taxa: {(TaxaDiaria * 100).ToString("0.0", CulturaBr)}% ao dia");
-            }
+                Console.WriteLine("CÁLCULO DE JUROS POR ATRASO");
+                Console.WriteLine();
 
-            Console.WriteLine($"Juros: {juros.ToString("C", CulturaBr)}");
-            Console.WriteLine($"Total a pagar: {total.ToString("C", CulturaBr)}");
+                decimal? valor = LerValor();
+                if (valor == null)
+                    return;
+
+                DateTime? vencimento = LerVencimento();
+                if (vencimento == null)
+                    return;
+
+                ExibirResultado(valor.Value, vencimento.Value);
+
+                calcularOutro = DesejaCalcularOutro();
+
+                if (calcularOutro)
+                    Console.Clear();
+            } while (calcularOutro);
         }
 
         public static int CalcularDiasAtraso(DateTime vencimento, DateTime hoje)
@@ -59,34 +48,79 @@ namespace TargetDesafio
             return Math.Round(juros, 2, MidpointRounding.AwayFromZero);
         }
 
-        private static decimal? LerValor()
+        private static void ExibirResultado(decimal valor, DateTime vencimento)
         {
-            Console.Write("Digite o valor original (use vírgula, ex.: 1500,75): ");
+            DateTime hoje = DateTime.Today;
+            int diasAtraso = CalcularDiasAtraso(vencimento, hoje);
+            decimal juros = CalcularJuros(valor, diasAtraso);
+            decimal total = valor + juros;
 
-            string? entrada = Console.ReadLine();
+            Console.WriteLine();
+            Console.WriteLine($"Valor original: {valor.ToString("C", CulturaBr)}");
+            Console.WriteLine($"Vencimento: {vencimento.ToString("dd/MM/yyyy", CulturaBr)}");
+            Console.WriteLine($"Data de hoje: {hoje.ToString("dd/MM/yyyy", CulturaBr)}");
 
-            if (!decimal.TryParse(entrada, NumberStyles.AllowDecimalPoint, CulturaBr, out decimal valor) || valor <= 0)
+            if (diasAtraso == 0)
             {
-                Console.WriteLine("Valor inválido. Digite um número maior que zero, com vírgula nos centavos.");
-                return null;
+                Console.WriteLine("O título não está vencido, então não há juros.");
+            }
+            else
+            {
+                string taxa = (TaxaDiaria * 100).ToString("0.0", CulturaBr);
+
+                Console.WriteLine($"Dias em atraso: {diasAtraso}");
+                Console.WriteLine($"Taxa: {taxa}% ao dia");
+                Console.WriteLine($"Cálculo: {valor.ToString("C", CulturaBr)} × {taxa}% × {diasAtraso} dias");
             }
 
-            return valor;
+            Console.WriteLine($"Juros: {juros.ToString("C", CulturaBr)}");
+            Console.WriteLine($"Total a pagar: {total.ToString("C", CulturaBr)}");
+        }
+
+        private static decimal? LerValor()
+        {
+            while (true)
+            {
+                Console.Write("Digite o valor Original cobrado (use vírgula, ex.: 1500,75) ou Enter para voltar: ");
+
+                string? entrada = Console.ReadLine();
+
+                if (string.IsNullOrWhiteSpace(entrada))
+                    return null;
+
+                if (decimal.TryParse(entrada.Trim(), NumberStyles.AllowDecimalPoint, CulturaBr, out decimal valor) && valor > 0)
+                    return valor;
+
+                Console.WriteLine("Valor inválido. Digite um número maior que zero, com vírgula nos centavos.");
+            }
         }
 
         private static DateTime? LerVencimento()
         {
-            Console.Write("Digite a data de vencimento (dd/MM/yyyy): ");
-
-            string? entrada = Console.ReadLine();
-
-            if (!DateTime.TryParseExact(entrada, "dd/MM/yyyy", CulturaBr, DateTimeStyles.None, out DateTime vencimento))
+            while (true)
             {
-                Console.WriteLine("Data inválida. Use o formato dd/MM/yyyy, por exemplo 15/09/2026.");
-                return null;
-            }
+                Console.Write("Digite a data de vencimento (dd/MM/yyyy) ou Enter para voltar: ");
 
-            return vencimento;
+                string? entrada = Console.ReadLine();
+
+                if (string.IsNullOrWhiteSpace(entrada))
+                    return null;
+
+                if (DateTime.TryParseExact(entrada.Trim(), "dd/MM/yyyy", CulturaBr, DateTimeStyles.None, out DateTime vencimento))
+                    return vencimento;
+
+                Console.WriteLine("Data inválida. Use o formato dd/MM/yyyy, por exemplo 15/09/2026.");
+            }
+        }
+
+        private static bool DesejaCalcularOutro()
+        {
+            Console.WriteLine();
+            Console.Write("Deseja calcular outro valor? (S/N): ");
+
+            string? resposta = Console.ReadLine()?.Trim();
+
+            return string.Equals(resposta, "S", StringComparison.OrdinalIgnoreCase);
         }
     }
 }
