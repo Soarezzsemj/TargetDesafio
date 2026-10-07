@@ -4,7 +4,6 @@ using TargetDesafio.Models;
 
 namespace TargetDesafio
 {
-    
     public class Questao1Comissoes
     {
         private const decimal LimiteFaixa1 = 100m;
@@ -26,9 +25,12 @@ namespace TargetDesafio
                     return;
                 }
 
-                Dictionary<string, decimal> totais = CalcularTotaisPorVendedor(vendas);
+                Dictionary<string, List<Venda>> vendasPorVendedor = AgruparPorVendedor(vendas);
 
-                ExibirResultado(totais);
+                ExibirResumo(vendasPorVendedor);
+
+                if (DesejaVerDetalhes())
+                    ExibirDetalhes(vendasPorVendedor);
             }
             catch (IOException ex)
             {
@@ -67,9 +69,9 @@ namespace TargetDesafio
             return dadosRaiz?.Vendas ?? new List<Venda>();
         }
 
-        private static Dictionary<string, decimal> CalcularTotaisPorVendedor(List<Venda> vendas)
+        private static Dictionary<string, List<Venda>> AgruparPorVendedor(List<Venda> vendas)
         {
-            var totais = new Dictionary<string, decimal>();
+            var vendasPorVendedor = new Dictionary<string, List<Venda>>();
 
             foreach (var venda in vendas)
             {
@@ -79,25 +81,67 @@ namespace TargetDesafio
                     continue;
                 }
 
-                decimal comissao = CalcularComissao(venda.valor);
+                if (!vendasPorVendedor.TryGetValue(venda.vendedor, out List<Venda>? lista))
+                {
+                    lista = new List<Venda>();
+                    vendasPorVendedor[venda.vendedor] = lista;
+                }
 
-                totais[venda.vendedor] = totais.GetValueOrDefault(venda.vendedor) + comissao;
+                lista.Add(venda);
             }
 
-            return totais;
+            return vendasPorVendedor;
         }
 
-        private static void ExibirResultado(Dictionary<string, decimal> totais)
+        private static decimal CalcularTotal(List<Venda> vendas)
+        {
+            return vendas.Sum(venda => CalcularComissao(venda.valor));
+        }
+
+        private static void ExibirResumo(Dictionary<string, List<Venda>> vendasPorVendedor)
         {
             Console.WriteLine("COMISSÃO DE CADA VENDEDOR");
             Console.WriteLine();
 
-            foreach (var item in totais)
+            foreach (var item in vendasPorVendedor)
             {
-                decimal total = Math.Round(item.Value, 2, MidpointRounding.AwayFromZero);
+                decimal total = Math.Round(CalcularTotal(item.Value), 2, MidpointRounding.AwayFromZero);
+                string rotulo = item.Value.Count == 1 ? "venda" : "vendas";
 
-                Console.WriteLine($"{item.Key}: {total.ToString("C", CulturaBr)}");
+                Console.WriteLine($"{item.Key}: {total.ToString("C", CulturaBr)} ({item.Value.Count} {rotulo})");
             }
+        }
+
+        private static bool DesejaVerDetalhes()
+        {
+            Console.WriteLine();
+            Console.Write("Deseja ver o detalhamento das vendas? (S/N): ");
+
+            string? resposta = Console.ReadLine()?.Trim();
+
+            return string.Equals(resposta, "S", StringComparison.OrdinalIgnoreCase);
+        }
+
+        private static void ExibirDetalhes(Dictionary<string, List<Venda>> vendasPorVendedor)
+        {
+            Console.WriteLine();
+            Console.WriteLine("DETALHAMENTO DAS VENDAS");
+
+            foreach (var item in vendasPorVendedor)
+            {
+                Console.WriteLine();
+                Console.WriteLine(item.Key);
+
+                foreach (var venda in item.Value)
+                {
+                    decimal comissao = CalcularComissao(venda.valor);
+
+                    Console.WriteLine($"  Venda de {venda.valor.ToString("C", CulturaBr)} -> comissão {comissao.ToString("C4", CulturaBr)}");
+                }
+            }
+
+            Console.WriteLine();
+            Console.WriteLine("Comissões por venda exibidas com 4 casas, o total soma sem arredondar e arredonda só no final");
         }
     }
 }
