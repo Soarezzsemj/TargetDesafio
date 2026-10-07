@@ -44,10 +44,14 @@ Lê `Data/vendas.json` e calcula a comissão de cada venda, somando por vendedor
 Resultado com os dados do desafio:
 
 ```
-João Silva: R$ 495,68
-Maria Souza: R$ 465,95
-Carlos Oliveira: R$ 379,37
-Ana Lima: R$ 404,98
+COMISSÃO DE CADA VENDEDOR
+
+João Silva: R$ 495,68 (10 vendas)
+Maria Souza: R$ 465,95 (9 vendas)
+Carlos Oliveira: R$ 379,37 (8 vendas)
+Ana Lima: R$ 404,98 (9 vendas)
+
+Deseja ver o detalhamento das vendas? (S/N):
 ```
 
 ### 2. Movimentação de estoque
