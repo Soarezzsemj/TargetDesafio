@@ -8,5 +8,7 @@ namespace TargetDesafio
 {
     public class Questao2Estoque
     {
+      
+
     }
 }
