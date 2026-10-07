@@ -42,7 +42,8 @@ do {
 
         case 2:
             Console.Clear();
-            Console.WriteLine("2 - Questão Estoque");
+            Questao2Estoque questao2 = new Questao2Estoque();
+            questao2.ExecutarQuestao();
 
             Console.WriteLine("\nPressione qualquer tecla para voltar ao menu...");
             Console.ReadKey();
@@ -50,7 +51,8 @@ do {
 
         case 3:
             Console.Clear();
-            Console.WriteLine("3 - Questão Juros");
+            Questao3Juros questao3 = new Questao3Juros();
+            questao3.ExecutarQuestao();
 
             Console.WriteLine("\nPressione qualquer tecla para voltar ao menu...");
             Console.ReadKey();

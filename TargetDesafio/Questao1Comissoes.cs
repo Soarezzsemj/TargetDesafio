@@ -4,14 +4,7 @@ using TargetDesafio.Models;
 
 namespace TargetDesafio
 {
-    /// <summary>
-    /// Questão 1: calcula a comissão de cada vendedor a partir de Data/vendas.json.
-    /// A regra é aplicada a cada venda:
-    ///   - abaixo de R$ 100,00: sem comissão
-    ///   - de R$ 100,00 até abaixo de R$ 500,00: 1%
-    ///   - a partir de R$ 500,00: 5%
-    /// O arredondamento para 2 casas é feito apenas no total de cada vendedor.
-    /// </summary>
+    
     public class Questao1Comissoes
     {
         private const decimal LimiteFaixa1 = 100m;
